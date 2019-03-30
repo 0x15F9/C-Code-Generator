@@ -24,12 +24,39 @@ function activate(context) {
 		vscode.window.showInformationMessage('Hello World!');
 	});
 
+	let generateClassCommand = vscode.commands.registerCommand('extension.cppGenerateEmptyClass', () => {
+		vscode.window.showInputBox({
+				placeHolder: "Name of Class. eg: Employee"
+			})
+			.then((className => {
+				vscode.window.showInformationMessage(`Generating Class ${className}...`);
+				cppGenerateEmptyClass(className);
+			}));
+	});
+
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(generateClassCommand);
 }
 exports.activate = activate;
 
 // this method is called when your extension is deactivated
 function deactivate() {}
+
+function cppGenerateEmptyClass(className) {
+	var editor = vscode.window.activeTextEditor;
+	let newLines = editor.document.lineAt(editor.selection.active.line).isEmptyOrWhitespace ? 0 : 1;
+
+	var template = `// Class definition for ${className}\n`;
+	template += `class ${className}\n`;
+	template += '{\n';
+	template += '\n';
+	template += '};\n';
+
+	editor.insertSnippet(new vscode.SnippetString(template), new vscode.Position(editor.selection.end.line + newLines, 0))
+	.then((className => {
+		vscode.window.showInformationMessage(`Class ${className} Generated...`);
+	}));
+}
 
 module.exports = {
 	activate,
