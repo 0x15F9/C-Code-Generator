@@ -11,7 +11,8 @@
 	],
 	"activationEvents": [
 		"onCommand:extension.helloWorld",
-		"onCommand:extension.cppGenerateEmptyClass"
+		"onCommand:extension.cppGenerateEmptyClass",
+		"onCommand:extension.cppGenerateAttributes"
 	],
 	"main": "./extension.js",
 	"contributes": {
@@ -23,6 +24,10 @@
 			{
 				"command": "extension.cppGenerateEmptyClass",
 				"title": "C++: Generate empty class"
+			},
+			{
+				"command": "extension.cppGenerateAttributes",
+				"title": "C++: Generate Attributes for a class"
 			}
 		]
 	},

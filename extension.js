@@ -34,8 +34,26 @@ function activate(context) {
 			}));
 	});
 
+	let generateAttributesCommand = vscode.commands.registerCommand('extension.cppGenerateAttributes', ()=> {
+		var att = {};
+		// while (true) {
+			vscode.window.showInputBox({
+				placeHolder: "<attributeName> <space> <dataType> (blank to end)"
+			}).then((inp)=>{
+				if (inp.length=0 || inp.split(" ").length!=2) {
+					return false;
+				}
+				att[inp.split(" ")[0]]=inp.split(" ")[1];
+			}).then(()=>{
+		// }
+		vscode.window.showInformationMessage(`Generating Attributes...`);
+		cppGenerateAttributes(att);
+			});
+	})
+
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(generateClassCommand);
+	context.subscriptions.push(generateAttributesCommand);
 }
 exports.activate = activate;
 
@@ -55,6 +73,21 @@ function cppGenerateEmptyClass(className) {
 	editor.insertSnippet(new vscode.SnippetString(template), new vscode.Position(editor.selection.end.line + newLines, 0))
 	.then((className => {
 		vscode.window.showInformationMessage(`Class ${className} Generated...`);
+	}));
+}
+
+function cppGenerateAttributes(attributes) {
+	var editor = vscode.window.activeTextEditor;
+	let newLines = editor.document.lineAt(editor.selection.active.line).isEmptyOrWhitespace ? 0 : 1;
+
+	var template = "";
+	for(var key in attributes)
+	{
+		template += attributes[key] + " " + key + ";\n"
+	}
+	editor.insertSnippet(new vscode.SnippetString(template), new vscode.Position(editor.selection.end.line + newLines, 0))
+	.then((className => {
+		vscode.window.showInformationMessage(`Attributes Generated...`);
 	}));
 }
 
